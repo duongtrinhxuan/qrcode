@@ -1,4 +1,4 @@
-package com.example.qrcodescanner.ui.scanned_history
+package com.example.qrcodescanner.ui.ui.scanned_history
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

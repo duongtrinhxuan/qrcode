@@ -1,5 +1,6 @@
-package com.example.qrcodescanner.ui.mainactivity
+package com.example.qrcodescanner.ui.ui.mainactivity
 
+import android.icu.util.Calendar
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,6 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.viewpager.widget.ViewPager
 import com.example.qrcodescanner.R
+import com.example.qrcodescanner.ui.db.database.QrResultDatabase
+import com.example.qrcodescanner.ui.db.entities.QrResult
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
@@ -30,6 +33,15 @@ class MainActivity : AppCompatActivity() {
         setViewPagerAdapter()
         setBottomNavigation()
         setViewPagerListener()
+
+        val qrResult = QrResult(
+            result = "Dummy Text",
+            resultType = "Text",
+            favourite = false,
+            calendar = Calendar.getInstance()
+        )
+
+        QrResultDatabase.getAppDatabase(this).getQrDao()?.insertQrResult(qrResult)
     }
 
 

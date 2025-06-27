@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -11,37 +12,55 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.viewpager.widget.ViewPager
+import com.example.qrcodescanner.R
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class MainActivity : ComponentActivity() {
+
+class MainActivity : AppCompatActivity() {
+    private lateinit var viewPager: ViewPager
+    private lateinit var bottomNavigationView: BottomNavigationView
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                Greeting(
-                    name = "Android",
-                    modifier = Modifier.padding(innerPadding)
-                )
+        setContentView(R.layout.activity_main)
+        viewPager = findViewById(R.id.viewPager)
+        bottomNavigationView = findViewById(R.id.bottomNavigationView)
+        setViewPagerAdapter()
+        setBottomNavigation()
+        setViewPagerListener()
+    }
+
+
+
+    private fun setBottomNavigation() {
+        bottomNavigationView.setOnNavigationItemSelectedListener {
+            viewPager.currentItem =when (it.itemId) {
+                R.id.scanMenuId -> 0
+                R.id.recentScannedMenuId -> 1
+                R.id.favouritesMenuId -> 2
+                else -> 0
             }
+            true
         }
     }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-        Greeting(
-            name = "Android",
-            modifier = Modifier.padding(innerPadding)
-        )
+    private fun setViewPagerAdapter() {
+        viewPager.adapter = MainPagerAdapter(supportFragmentManager)
+    }
+    private fun setViewPagerListener() {
+        viewPager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
+            override fun onPageSelected(position: Int) {
+                bottomNavigationView.selectedItemId =   when(position) {
+                    0 -> R.id.scanMenuId
+                    1 -> R.id.recentScannedMenuId
+                    2 -> R.id.favouritesMenuId
+                    else -> R.id.scanMenuId
+                }
+            }
+        })
     }
 }
+
+

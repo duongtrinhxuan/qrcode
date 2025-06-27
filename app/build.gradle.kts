@@ -37,6 +37,9 @@ android {
     buildFeatures {
         compose = true
     }
+    viewBinding {
+        enable = true
+    }
 }
 
 dependencies {
@@ -60,4 +63,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    // Google Material Design
+    implementation("com.google.android.material:material:1.11.0")
 }

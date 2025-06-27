@@ -30,7 +30,7 @@
         </activity>
         <activity
             android:name=".ui.mainactivity.MainActivity"
-           >
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
     </application>
 

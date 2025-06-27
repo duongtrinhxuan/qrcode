@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">QrCodeScanner</string>
+    <string name="by_trinhxuanduong">By Trinh Xuan Duong</string>
+    <string name="qrcode">QR CODE SCANNER</string>
+</resources>

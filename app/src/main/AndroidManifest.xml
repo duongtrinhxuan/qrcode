@@ -19,7 +19,7 @@
         android:theme="@style/Theme.QrCodeScanner"
         tools:targetApi="31">
         <activity
-            android:name=".ui.SplashActivity"
+            android:name=".ui.Splash.SplashActivity"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <intent-filter>
@@ -29,7 +29,7 @@
         </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.mainactivity.MainActivity"
            >
         </activity>
     </application>

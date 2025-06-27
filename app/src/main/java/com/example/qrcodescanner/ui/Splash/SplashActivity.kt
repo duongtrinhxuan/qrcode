@@ -1,18 +1,17 @@
-package com.example.qrcodescanner.ui
+package com.example.qrcodescanner.ui.Splash
 
 import android.Manifest
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.Looper
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.material3.AlertDialog
 import androidx.core.app.ActivityCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.example.qrcodescanner.MainActivity
+import com.example.qrcodescanner.ui.mainactivity.MainActivity
 import com.example.qrcodescanner.R
+import java.util.logging.Handler
 
 class SplashActivity : AppCompatActivity() {
     companion object {
@@ -23,7 +22,10 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_splash)
-        checkForPermission()
+
+        android.os.Handler(Looper.getMainLooper()).postDelayed({
+            checkForPermission()
+        }, 3000)
     }
 
     private fun checkForPermission() {

@@ -16,10 +16,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/containerScanner"/>
+        app:layout_constraintBottom_toTopOf="@+id/barcode_scanner"/>
 
-    <FrameLayout
-        android:id="@+id/containerScanner"
+    <com.journeyapps.barcodescanner.DecoratedBarcodeView
+        android:id="@+id/barcode_scanner"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintStart_toStartOf="parent"

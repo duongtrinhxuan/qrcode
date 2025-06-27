@@ -69,5 +69,4 @@ dependencies {
 
     // QR Code Scanner Library
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
-
 }

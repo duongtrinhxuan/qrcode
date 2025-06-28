@@ -1,6 +1,6 @@
 package com.example.qrcodescanner.ui.db.entities
 
-import android.icu.util.Calendar
+import java.util.Calendar
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey

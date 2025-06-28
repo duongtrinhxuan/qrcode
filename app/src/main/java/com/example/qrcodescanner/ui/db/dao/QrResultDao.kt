@@ -18,7 +18,7 @@ interface QrResultDao {
     fun deleteAllScannedResults()
 
     @Query("DELETE FROM QrResult WHERE favourite = 1")
-    fun deleteAllFavouriteResult(): List<QrResult>
+    fun deleteAllFavouriteResult()
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertQrResult(qrResult: QrResult): Long

@@ -1,6 +1,6 @@
 package com.example.qrcodescanner.ui.ui.mainactivity
 
-import android.icu.util.Calendar
+import java.util.Calendar
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -40,8 +40,9 @@ class MainActivity : AppCompatActivity() {
             favourite = false,
             calendar = Calendar.getInstance()
         )
-
-        QrResultDatabase.getAppDatabase(this).getQrDao()?.insertQrResult(qrResult)
+        Thread {
+            QrResultDatabase.getAppDatabase(this).getQrDao().insertQrResult(qrResult)
+        }.start()
     }
 
 

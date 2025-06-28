@@ -1,16 +1,16 @@
 package com.example.qrcodescanner.ui.db.converters
 
-import androidx.room.TypeConverters
+import androidx.room.TypeConverter
 import java.util.Calendar
 
 class DateTimeConverters {
-    @TypeConverters
+    @TypeConverter
     fun toCalendar(l: Long): Calendar? {
        val c = Calendar.getInstance()
        c!!.timeInMillis = l
         return c
     }
-    @TypeConverters
+    @TypeConverter
     fun fromCalendar(c: Calendar?): Long? {
         return c?.time?.time
     }

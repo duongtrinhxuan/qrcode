@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -69,4 +70,12 @@ dependencies {
 
     // QR Code Scanner Library
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
+
+    // Room Database
+    val room_version = "2.7.2"
+
+    implementation("androidx.room:room-runtime:$room_version")
+    ksp("androidx.room:room-compiler:$room_version")
+    // Stetho
+    implementation ("com.facebook.stetho:stetho:1.6.0")
 }

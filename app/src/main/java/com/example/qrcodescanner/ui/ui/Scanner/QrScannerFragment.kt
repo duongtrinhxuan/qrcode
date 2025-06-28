@@ -56,6 +56,9 @@ class QrScannerFragment : Fragment() {
 
     private fun setResultDialog() {
         resultDialog = QrCodeResultDialog(requireContext())
+        {
+            lastResult = null
+        }
     }
 
 
@@ -132,7 +135,10 @@ class QrScannerFragment : Fragment() {
             val insertedRowid = dbHelperI.insertQrResult(result)
             val qrResult = dbHelperI.getQrResult(insertedRowid)
             requireActivity().runOnUiThread{
-                resultDialog.show(qrResult)
+                val dialog = QrCodeResultDialog(requireContext()) {
+                    lastResult = null
+                }
+                dialog.show(qrResult)
             }
 
         }.start()

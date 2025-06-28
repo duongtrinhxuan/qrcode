@@ -2,6 +2,7 @@ package com.example.qrcodescanner.ui.ui.dialogs
 
 import android.app.Dialog
 import android.app.DialogFragment
+import android.app.KeyguardManager.KeyguardDismissCallback
 import android.content.ClipData
 import android.content.Context
 import android.content.Intent
@@ -10,7 +11,10 @@ import com.example.qrcodescanner.ui.db.entities.QrResult
 import com.example.qrcodescanner.R
 import com.example.qrcodescanner.ui.ui.utils.toFormattedDisplay
 
-class QrCodeResultDialog (var context : Context) {
+class QrCodeResultDialog (
+    var context : Context ,
+    private val onDismissCallback: (() -> Unit)? = null )
+{
     private lateinit var dialog : Dialog
 
     private var qrResult : QrResult? = null
@@ -29,6 +33,9 @@ class QrCodeResultDialog (var context : Context) {
         dialog = Dialog(context)
         dialog.setContentView(R.layout.layout_qr_result_show)
         dialog.setCancelable(true)
+        dialog.setOnDismissListener{
+            onDismissCallback?.invoke()
+        }
         favouriteIcon = dialog.findViewById(R.id.favouriteIcon)
         shareResult = dialog.findViewById(R.id.shareResult)
         copyResult = dialog.findViewById(R.id.copyResult)
@@ -36,6 +43,7 @@ class QrCodeResultDialog (var context : Context) {
         scannedText = dialog.findViewById(R.id.scannedText)
         scannedDate = dialog.findViewById(R.id.scannedDate)
         onClicks()
+
     }
 
     fun show(qrResult: QrResult){

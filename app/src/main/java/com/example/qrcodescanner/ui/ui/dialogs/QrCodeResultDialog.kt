@@ -9,6 +9,9 @@ import android.content.Intent
 import android.widget.Toast
 import com.example.qrcodescanner.ui.db.entities.QrResult
 import com.example.qrcodescanner.R
+import com.example.qrcodescanner.ui.db.DBHelper
+import com.example.qrcodescanner.ui.db.DBHelperI
+import com.example.qrcodescanner.ui.db.database.QrResultDatabase
 import com.example.qrcodescanner.ui.ui.utils.toFormattedDisplay
 
 class QrCodeResultDialog (
@@ -25,10 +28,15 @@ class QrCodeResultDialog (
     private lateinit var scannedDate: androidx.appcompat.widget.AppCompatTextView
     private lateinit var scannedText: androidx.appcompat.widget.AppCompatTextView
 
+    private lateinit var dbHelperI: DBHelperI
     init {
+        init()
         initDialog()
     }
 
+    private fun init() {
+        dbHelperI = DBHelper(QrResultDatabase.getAppDatabase(context))
+    }
     private fun initDialog() {
         dialog = Dialog(context)
         dialog.setContentView(R.layout.layout_qr_result_show)
@@ -56,7 +64,11 @@ class QrCodeResultDialog (
 
     private fun onClicks() {
         favouriteIcon.setOnClickListener {
-
+            if(favouriteIcon.isSelected){
+                removeFromFavourites()
+            } else {
+                addToFavourites()
+            }
         }
         shareResult.setOnClickListener {
             sharedResult()
@@ -68,6 +80,24 @@ class QrCodeResultDialog (
             dialog.dismiss()
         }
 
+    }
+
+    private fun addToFavourites() {
+        favouriteIcon.isSelected = true
+        qrResult?.id?.let { id ->
+            Thread {
+                dbHelperI.addToFavourite(id)
+            }.start()
+        }
+    }
+
+    private fun removeFromFavourites() {
+        favouriteIcon.isSelected = false
+        qrResult?.id?.let { id ->
+            Thread {
+                dbHelperI.removeFromFavourite(id)
+            }.start()
+        }
     }
 
     private fun sharedResult() {

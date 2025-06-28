@@ -20,4 +20,12 @@ class DBHelper (var qrResultDatabase: QrResultDatabase) : DBHelperI {
     override fun getQrResult(id: Int): QrResult {
         return qrResultDatabase.getQrDao().getQrResult(id)
     }
+
+    override fun addToFavourite(id: Int): Int {
+        return qrResultDatabase.getQrDao().addToFavourite(id)
+    }
+
+    override fun removeFromFavourite(id: Int): Int {
+        return qrResultDatabase.getQrDao().removeFromFavourite(id)
+    }
 }

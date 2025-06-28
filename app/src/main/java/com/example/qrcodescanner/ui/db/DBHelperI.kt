@@ -6,4 +6,8 @@ interface DBHelperI {
     fun insertQrResult(result : String): Int
 
     fun getQrResult(id: Int): QrResult
+
+    fun addToFavourite(id: Int): Int
+
+    fun removeFromFavourite(id: Int): Int
 }

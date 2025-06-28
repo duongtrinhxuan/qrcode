@@ -7,24 +7,28 @@ import androidx.room.RoomDatabase
 import com.example.qrcodescanner.ui.db.dao.QrResultDao
 import com.example.qrcodescanner.ui.db.entities.QrResult
 
-@Database(entities = [QrResult::class], version = 1, exportSchema = false)
+@Database(entities = [QrResult::class], version = 1)
 abstract class QrResultDatabase : RoomDatabase() {
     abstract fun getQrDao(): QrResultDao
 
     companion object {
         private const val DB_NAME = "QrResultDatabase"
         @Volatile
-        private var qrResultDatabase: QrResultDatabase? = null
+        private var INSTANCE: QrResultDatabase? = null
 
         fun getAppDatabase(context: Context): QrResultDatabase {
-            return qrResultDatabase ?: synchronized(this) {
+            val tempInstance = INSTANCE
+            if(tempInstance != null) {
+                return tempInstance
+            }
+            synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     QrResultDatabase::class.java,
                     DB_NAME
-                ).allowMainThreadQueries().build()
-                qrResultDatabase = instance
-                instance
+                ).build()
+                INSTANCE = instance
+                return instance
             }
         }
     }

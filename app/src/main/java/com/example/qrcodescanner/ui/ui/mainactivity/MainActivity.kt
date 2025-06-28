@@ -2,6 +2,7 @@ package com.example.qrcodescanner.ui.ui.mainactivity
 
 import java.util.Calendar
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -41,7 +42,8 @@ class MainActivity : AppCompatActivity() {
             calendar = Calendar.getInstance()
         )
         Thread {
-            QrResultDatabase.getAppDatabase(this).getQrDao()?.insertQrResult(qrResult)
+            QrResultDatabase.getAppDatabase(this).getQrDao().insertQrResult(qrResult)
+            Log.d("Inserted QR Result: ${qrResult.result}","them thanh cong")
         }.start()
     }
 

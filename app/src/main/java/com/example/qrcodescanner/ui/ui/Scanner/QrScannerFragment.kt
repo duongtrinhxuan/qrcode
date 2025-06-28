@@ -12,6 +12,10 @@ import com.journeyapps.barcodescanner.BarcodeCallback
 import com.journeyapps.barcodescanner.BarcodeResult
 import com.journeyapps.barcodescanner.DefaultDecoderFactory
 import com.example.qrcodescanner.R
+import com.example.qrcodescanner.ui.db.DBHelper
+import com.example.qrcodescanner.ui.db.DBHelperI
+import com.example.qrcodescanner.ui.db.database.QrResultDatabase
+import com.example.qrcodescanner.ui.ui.dialogs.QrCodeResultDialog
 
 class QrScannerFragment : Fragment() {
     companion object {
@@ -25,6 +29,9 @@ class QrScannerFragment : Fragment() {
     private lateinit var flashToggle: ImageView
     private var lastResult: String? = null
 
+    private lateinit var resultDialog : QrCodeResultDialog
+
+    private lateinit var dbHelperI: DBHelperI
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -32,11 +39,24 @@ class QrScannerFragment : Fragment() {
         mView = inflater.inflate(R.layout.fragment_qr_scanner, container, false)
         barcodeView = mView.findViewById(R.id.barcode_scanner)
         flashToggle = mView.findViewById(R.id.flashToggle)
-        initializeQrScanner()
+        init()
+        initViews()
         setOnClick()
         return mView.rootView
     }
 
+    private fun init() {
+        dbHelperI = DBHelper(QrResultDatabase.getAppDatabase(requireContext()))
+    }
+
+    private fun initViews() {
+        initializeQrScanner()
+        setResultDialog()
+    }
+
+    private fun setResultDialog() {
+        resultDialog = QrCodeResultDialog(requireContext())
+    }
 
 
     private fun initializeQrScanner() {
@@ -46,7 +66,10 @@ class QrScannerFragment : Fragment() {
         barcodeView.decodeContinuous(object : BarcodeCallback {
             override fun barcodeResult(result: BarcodeResult?) {
                 result?.text?.let {
+                    if (it != lastResult) {
+                        lastResult = it
                         handleResult(it)
+                    }
                 }
             }
             override fun possibleResultPoints(resultPoints: List<com.google.zxing.ResultPoint>) {}
@@ -93,7 +116,25 @@ class QrScannerFragment : Fragment() {
         barcodeView.setTorchOff()
     }
     private fun handleResult(result: String) {
-        Toast.makeText(requireContext(), "QR Content: $result", Toast.LENGTH_SHORT).show()
-        barcodeView.resume()
+        onQrResult(result)
+    }
+
+    private fun onQrResult(text: String) {
+        if (text.isNullOrEmpty()){
+            Toast.makeText(context, "Empty Qr Code", Toast.LENGTH_SHORT).show()
+        } else {
+            saveToDatabase(text)
+        }
+    }
+
+    private fun saveToDatabase(result: String) {
+        Thread {
+            val insertedRowid = dbHelperI.insertQrResult(result)
+            val qrResult = dbHelperI.getQrResult(insertedRowid)
+            requireActivity().runOnUiThread{
+                resultDialog.show(qrResult)
+            }
+
+        }.start()
     }
 }

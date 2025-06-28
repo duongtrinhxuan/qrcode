@@ -7,7 +7,7 @@ class DateTimeConverters {
     @TypeConverter
     fun toCalendar(l: Long): Calendar? {
        val c = Calendar.getInstance()
-       c!!.timeInMillis = l
+       c.timeInMillis = l
         return c
     }
     @TypeConverter

@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
             calendar = Calendar.getInstance()
         )
         Thread {
-            QrResultDatabase.getAppDatabase(this).getQrDao().insertQrResult(qrResult)
+            QrResultDatabase.getAppDatabase(this).getQrDao()?.insertQrResult(qrResult)
         }.start()
     }
 

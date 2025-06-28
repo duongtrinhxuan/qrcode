@@ -22,7 +22,7 @@ abstract class QrResultDatabase : RoomDatabase() {
                     context.applicationContext,
                     QrResultDatabase::class.java,
                     DB_NAME
-                ).build()
+                ).allowMainThreadQueries().build()
                 qrResultDatabase = instance
                 instance
             }

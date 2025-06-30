@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.qrcodescanner.R
 import com.example.qrcodescanner.ui.db.DBHelperI
 import com.example.qrcodescanner.ui.db.entities.QrResult
+import com.example.qrcodescanner.ui.ui.dialogs.QrCodeResultDialog
 import com.example.qrcodescanner.ui.ui.utils.gone
 import com.example.qrcodescanner.ui.ui.utils.toFormattedDisplay
 import com.example.qrcodescanner.ui.ui.utils.visible
@@ -19,6 +20,8 @@ class ScannedResultListAdapter(
     var context: Context,
     var listOfScannedResults: MutableList<QrResult>
 ): RecyclerView.Adapter<ScannedResultListAdapter.ScannedResultListViewHolder>(){
+
+    private var resultDialog = QrCodeResultDialog(context)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ScannedResultListViewHolder {
         return ScannedResultListViewHolder(
@@ -41,6 +44,13 @@ class ScannedResultListAdapter(
             result.text = qrResult.result
             tvTime.text = qrResult.calendar.toFormattedDisplay()
             setFavourite(qrResult.favourite)
+            onClicks(qrResult)
+        }
+
+        private fun onClicks(qrResult: QrResult) {
+            view.setOnClickListener{
+                resultDialog.show(qrResult)
+            }
         }
 
         private fun setFavourite(favourite: Boolean) {

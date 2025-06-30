@@ -6,8 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.qrcodescanner.R
 import com.example.qrcodescanner.ui.db.DBHelper
 import com.example.qrcodescanner.ui.db.DBHelperI
@@ -38,7 +40,8 @@ class ScannedHistoryFragment : Fragment() {
     private lateinit var dbHelperI: DBHelperI
     private lateinit var scannedHistoryRecyclerView: RecyclerView
     private lateinit var noResultFound: ImageView
-
+    private lateinit var tvHeaderTextView: TextView
+    private lateinit var swipeRefresh : SwipeRefreshLayout
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         handleArguments()
@@ -62,6 +65,8 @@ class ScannedHistoryFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_scanned_history, container, false)
         scannedHistoryRecyclerView = view.findViewById(R.id.scannedHistoryRecyclerView)
         noResultFound = view.findViewById(R.id.noResultFound)
+        tvHeaderTextView = view.findViewById(R.id.tvHeaderText)
+        swipeRefresh = view.findViewById(R.id.swipeRefresh)
         return view
     }
 
@@ -69,8 +74,12 @@ class ScannedHistoryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         init()
         showListOfResults()
+        setSwipeRefreshLayout()
     }
-
+    private fun setSwipeRefreshLayout(){
+        swipeRefresh.isRefreshing = false
+        showListOfResults()
+    }
     private fun init() {
         val ctx = context?.applicationContext
         if (ctx != null) {
@@ -90,6 +99,7 @@ class ScannedHistoryFragment : Fragment() {
             val listOfAllResult = dbHelperI.getAllQrScannedResult()
             requireActivity().runOnUiThread {
                 showResults(listOfAllResult)
+                tvHeaderTextView.text = "Recent Scanned"
             }
         }.start()
     }
@@ -99,6 +109,7 @@ class ScannedHistoryFragment : Fragment() {
             val listOfFavouriteResult = dbHelperI.getAllFavouriteQrScannedResult()
             requireActivity().runOnUiThread {
                 showResults(listOfFavouriteResult)
+                tvHeaderTextView.text = "Favourite Scanned Results"
             }
         }.start()
     }

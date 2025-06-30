@@ -17,7 +17,6 @@ import com.example.qrcodescanner.ui.ui.adapters.ScannedResultListAdapter
 import com.example.qrcodescanner.ui.ui.utils.gone
 import com.example.qrcodescanner.ui.ui.utils.visible
 
-
 class ScannedHistoryFragment : Fragment() {
     enum class ResultListType {
         ALL_RESULT,
@@ -25,9 +24,8 @@ class ScannedHistoryFragment : Fragment() {
     }
 
     companion object {
-
         private const val ARGUMENT_RESULT_LIST_TYPE = "ArgumentResultListType"
-        fun newInstance(screenType : ResultListType): ScannedHistoryFragment {
+        fun newInstance(screenType: ResultListType): ScannedHistoryFragment {
             val bundle = Bundle()
             bundle.putSerializable(ARGUMENT_RESULT_LIST_TYPE, screenType)
             val fragment = ScannedHistoryFragment()
@@ -35,52 +33,78 @@ class ScannedHistoryFragment : Fragment() {
             return fragment
         }
     }
+
     private lateinit var resultType: ResultListType
-    private lateinit var mView: View
     private lateinit var dbHelperI: DBHelperI
-    private lateinit var scannedHistoryRecyclerView : RecyclerView
+    private lateinit var scannedHistoryRecyclerView: RecyclerView
     private lateinit var noResultFound: ImageView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         handleArguments()
     }
 
     private fun handleArguments() {
-        resultType = arguments?.getSerializable(ARGUMENT_RESULT_LIST_TYPE) as ResultListType
+        resultType = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            arguments?.getSerializable(ARGUMENT_RESULT_LIST_TYPE, ResultListType::class.java)
+                ?: ResultListType.ALL_RESULT
+        } else {
+            @Suppress("DEPRECATION")
+            arguments?.getSerializable(ARGUMENT_RESULT_LIST_TYPE) as? ResultListType
+                ?: ResultListType.ALL_RESULT
+        }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        mView = inflater.inflate(R.layout.fragment_scanned_history, container, false)
-        scannedHistoryRecyclerView = mView.findViewById(R.id.scannedHistoryRecyclerView)
-        noResultFound = mView.findViewById(R.id.noResultFound)
-        init()
-        showListOfResults()
-        return mView
+        val view = inflater.inflate(R.layout.fragment_scanned_history, container, false)
+        scannedHistoryRecyclerView = view.findViewById(R.id.scannedHistoryRecyclerView)
+        noResultFound = view.findViewById(R.id.noResultFound)
+        return view
     }
 
-    private fun showListOfResults() {
-        when(resultType) {
-            ResultListType.ALL_RESULT -> {
-                showAllResults()
-            }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        init()
+        showListOfResults()
+    }
 
-            ResultListType.FAVORITE_RESULT -> {
-                showFavoriteResults()
-            }
+    private fun init() {
+        val ctx = context?.applicationContext
+        if (ctx != null) {
+            dbHelperI = DBHelper(QrResultDatabase.getAppDatabase(ctx))
         }
     }
 
+    private fun showListOfResults() {
+        when (resultType) {
+            ResultListType.ALL_RESULT -> showAllResults()
+            ResultListType.FAVORITE_RESULT -> showFavoriteResults()
+        }
+    }
+
+    private fun showAllResults() {
+        Thread {
+            val listOfAllResult = dbHelperI.getAllQrScannedResult()
+            requireActivity().runOnUiThread {
+                showResults(listOfAllResult)
+            }
+        }.start()
+    }
+
     private fun showFavoriteResults() {
-        var listOfFavouriteResult = dbHelperI.getAllFavouriteQrScannedResult()
-        showResults(listOfFavouriteResult)
+        Thread {
+            val listOfFavouriteResult = dbHelperI.getAllFavouriteQrScannedResult()
+            requireActivity().runOnUiThread {
+                showResults(listOfFavouriteResult)
+            }
+        }.start()
     }
 
     private fun showResults(listOfQrResults: List<QrResult>) {
-        if(listOfQrResults.isEmpty()){
+        if (listOfQrResults.isEmpty()) {
             showEmptyState()
         } else {
             initRecyclerView(listOfQrResults)
@@ -94,22 +118,12 @@ class ScannedHistoryFragment : Fragment() {
             requireContext(),
             listOfQrResults.toMutableList()
         )
-
+        scannedHistoryRecyclerView.visible()
+        noResultFound.gone()
     }
 
     private fun showEmptyState() {
         scannedHistoryRecyclerView.gone()
         noResultFound.visible()
     }
-
-    private fun showAllResults() {
-        var listOfAllResult = dbHelperI.getAllQrScannedResult()
-        showResults(listOfAllResult)
-    }
-
-    private fun init() {
-        dbHelperI = DBHelper(QrResultDatabase.getAppDatabase(requireContext().applicationContext))
-    }
-
-
 }

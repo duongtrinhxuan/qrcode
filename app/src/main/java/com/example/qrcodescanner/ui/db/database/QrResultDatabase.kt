@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import com.example.qrcodescanner.ui.db.dao.QrResultDao
 import com.example.qrcodescanner.ui.db.entities.QrResult
 
-@Database(entities = [QrResult::class], version = 1)
+@Database(entities = [QrResult::class], version = 1, exportSchema = false)
 abstract class QrResultDatabase : RoomDatabase() {
     abstract fun getQrDao(): QrResultDao
 

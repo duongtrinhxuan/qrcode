@@ -14,8 +14,8 @@ class MainPagerAdapter(var fm: androidx.fragment.app.FragmentManager) : Fragment
     override fun getItem(position: Int): androidx.fragment.app.Fragment {
         return when (position) {
             0 -> QrScannerFragment.newInstance()
-            1 -> ScannedHistoryFragment.newInstance()
-            2 -> ScannedHistoryFragment.newInstance()
+            1 -> ScannedHistoryFragment.newInstance(ScannedHistoryFragment.ResultListType.ALL_RESULT)
+            2 -> ScannedHistoryFragment.newInstance(ScannedHistoryFragment.ResultListType.FAVORITE_RESULT)
             else -> QrScannerFragment.newInstance()
         }
     }

@@ -46,7 +46,7 @@ class QrScannerFragment : Fragment() {
     }
 
     private fun init() {
-        dbHelperI = DBHelper(QrResultDatabase.getAppDatabase(requireContext()))
+        dbHelperI = DBHelper(QrResultDatabase.getAppDatabase(requireContext().applicationContext))
     }
 
     private fun initViews() {

@@ -35,7 +35,7 @@ class QrCodeResultDialog (
     }
 
     private fun init() {
-        dbHelperI = DBHelper(QrResultDatabase.getAppDatabase(context))
+        dbHelperI = DBHelper(QrResultDatabase.getAppDatabase(context.applicationContext))
     }
     private fun initDialog() {
         dialog = Dialog(context)

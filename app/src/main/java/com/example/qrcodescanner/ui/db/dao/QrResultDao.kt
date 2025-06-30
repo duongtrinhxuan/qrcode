@@ -31,4 +31,7 @@ interface QrResultDao {
 
     @Query("UPDATE QrResult SET favourite = 0 WHERE id = :id")
     fun removeFromFavourite(id: Int): Int
+
+    @Query("DELETE FROM QrResult WHERE id = :id")
+    fun deleteQrResult(id: Int): Int
 }

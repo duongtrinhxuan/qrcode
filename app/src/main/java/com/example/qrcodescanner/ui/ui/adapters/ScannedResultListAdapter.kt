@@ -1,5 +1,6 @@
 package com.example.qrcodescanner.ui.ui.adapters
 
+import android.app.AlertDialog
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -44,15 +45,38 @@ class ScannedResultListAdapter(
             result.text = qrResult.result
             tvTime.text = qrResult.calendar.toFormattedDisplay()
             setFavourite(qrResult.favourite)
-            onClicks(qrResult)
+            onClicks(qrResult, position)
         }
 
-        private fun onClicks(qrResult: QrResult) {
+        private fun onClicks(qrResult: QrResult, position: Int) {
             view.setOnClickListener{
                 resultDialog.show(qrResult)
             }
+            view.setOnLongClickListener{
+                showDeleteDialog(qrResult, position)
+                true
+            }
         }
 
+        private fun showDeleteDialog(qrResult: QrResult, position: Int) {
+            AlertDialog.Builder(context, R.style.CustomAlertDialog)
+                .setTitle("Delete")
+                .setMessage("Are you sure you want to delete this result?")
+                .setPositiveButton("Delete") { dialog, which ->
+                    deleteThisRecord(qrResult, position)
+                }
+                .setNegativeButton("Cancel") { dialog, which ->
+                    dialog.dismiss()
+                }
+                .show()
+        }
+        private fun deleteThisRecord(qrResult: QrResult, position: Int) {
+            qrResult.id?.let { id ->
+                dbHelperI.deleteQrResult(id)
+                listOfScannedResults.removeAt(position)
+                notifyItemRemoved(position)
+            }
+        }
         private fun setFavourite(favourite: Boolean) {
             if (favourite) {
                 favouriteIcon.visible()

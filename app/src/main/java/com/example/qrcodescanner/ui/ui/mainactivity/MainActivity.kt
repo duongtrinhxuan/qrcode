@@ -50,8 +50,8 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun setBottomNavigation() {
-        bottomNavigationView.setOnNavigationItemSelectedListener {
-            viewPager.currentItem =when (it.itemId) {
+        bottomNavigationView.setOnItemSelectedListener { item ->
+            viewPager.currentItem = when (item.itemId) {
                 R.id.scanMenuId -> 0
                 R.id.recentScannedMenuId -> 1
                 R.id.favouritesMenuId -> 2

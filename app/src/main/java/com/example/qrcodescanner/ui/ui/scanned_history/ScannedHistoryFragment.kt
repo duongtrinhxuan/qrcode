@@ -1,5 +1,6 @@
 package com.example.qrcodescanner.ui.ui.scanned_history
 
+import android.app.AlertDialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -42,6 +43,7 @@ class ScannedHistoryFragment : Fragment() {
     private lateinit var noResultFound: ImageView
     private lateinit var tvHeaderTextView: TextView
     private lateinit var swipeRefresh : SwipeRefreshLayout
+    private lateinit var removeAll: ImageView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         handleArguments()
@@ -67,6 +69,7 @@ class ScannedHistoryFragment : Fragment() {
         noResultFound = view.findViewById(R.id.noResultFound)
         tvHeaderTextView = view.findViewById(R.id.tvHeaderText)
         swipeRefresh = view.findViewById(R.id.swipeRefresh)
+        removeAll = view.findViewById(R.id.removeAll)
         return view
     }
 
@@ -75,7 +78,37 @@ class ScannedHistoryFragment : Fragment() {
         init()
         showListOfResults()
         setSwipeRefreshLayout()
+        onClicks()
     }
+
+    private fun onClicks() {
+        removeAll.setOnClickListener {
+            showRemoveAllScannedResultsDialog()
+        }
+    }
+
+    private fun showRemoveAllScannedResultsDialog() {
+        AlertDialog.Builder(context, R.style.CustomAlertDialog)
+            .setTitle("Delete All")
+            .setMessage("Are you sure you want to delete all result?")
+            .setPositiveButton("Delete") { dialog, which ->
+                clearRecords()
+            }
+            .setNegativeButton("Cancel") { dialog, which ->
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    private fun clearRecords() {
+        when(resultType) {
+            ResultListType.ALL_RESULT -> dbHelperI.deleteAllScannedResults()
+            ResultListType.FAVORITE_RESULT -> dbHelperI.deleteAllFavouriteQrScannerResults()
+        }
+        scannedHistoryRecyclerView?.adapter?.notifyDataSetChanged()
+        showAllResults()
+    }
+
     private fun setSwipeRefreshLayout(){
         swipeRefresh.isRefreshing = false
         showListOfResults()
@@ -131,10 +164,17 @@ class ScannedHistoryFragment : Fragment() {
         )
         scannedHistoryRecyclerView.visible()
         noResultFound.gone()
+        removeAll.visible()
     }
 
     private fun showEmptyState() {
         scannedHistoryRecyclerView.gone()
         noResultFound.visible()
+        removeAll.gone()
+    }
+    private fun showRecyclerView() {
+        scannedHistoryRecyclerView.visible()
+        noResultFound.gone()
+        removeAll.visible()
     }
 }

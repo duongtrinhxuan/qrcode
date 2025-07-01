@@ -14,6 +14,12 @@ import com.example.qrcodescanner.ui.db.DBHelperI
 import com.example.qrcodescanner.ui.db.database.QrResultDatabase
 import com.example.qrcodescanner.ui.ui.utils.toFormattedDisplay
 import android.graphics.BitmapFactory
+import android.net.Uri
+import android.graphics.Bitmap
+import java.io.File
+import java.io.FileOutputStream
+import android.provider.MediaStore
+import androidx.core.content.FileProvider
 class QrCodeResultDialog (
     var context : Context ,
     private val onDismissCallback: (() -> Unit)? = null )
@@ -75,7 +81,7 @@ class QrCodeResultDialog (
             }
         }
         shareResult.setOnClickListener {
-            sharedResult()
+            shareQrImage()
         }
         copyResult.setOnClickListener {
             copyResultToClipBoard()
@@ -104,11 +110,28 @@ class QrCodeResultDialog (
         }
     }
 
-    private fun sharedResult() {
-        val txtIntent = Intent(Intent.ACTION_SEND)
-        txtIntent.type = "text/plain"
-        txtIntent.putExtra(Intent.EXTRA_TEXT, scannedText.text.toString())
-        context.startActivity(txtIntent)
+    private fun shareQrImage() {
+        qrResult?.image?.let { imageBytes ->
+            try {
+                val file = File(context.cacheDir, "qr_share.png")
+                val fos = FileOutputStream(file)
+                fos.write(imageBytes)
+                fos.flush()
+                fos.close()
+                val uri: Uri = FileProvider.getUriForFile(
+                    context,
+                    context.packageName + ".provider",
+                    file
+                )
+                val shareIntent = Intent(Intent.ACTION_SEND)
+                shareIntent.type = "image/png"
+                shareIntent.putExtra(Intent.EXTRA_STREAM, uri)
+                shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                context.startActivity(Intent.createChooser(shareIntent, "Chia sẻ QR Code"))
+            } catch (e: Exception) {
+                Toast.makeText(context, "Chia sẻ thất bại: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        } ?: Toast.makeText(context, "Không có hình ảnh QR để chia sẻ", Toast.LENGTH_SHORT).show()
     }
 
     private fun copyResultToClipBoard() {

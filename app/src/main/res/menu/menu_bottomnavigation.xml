@@ -13,5 +13,9 @@
         android:id="@+id/favouritesMenuId"
         android:icon="@drawable/ic_star_border_white_24dp"
         android:title="@string/favourites" />
+    <item
+        android:id="@+id/generateQrMenuId"
+        android:icon="@drawable/ic_star_border_white_24dp"
+        android:title="@string/favourites" />
 
 </menu>

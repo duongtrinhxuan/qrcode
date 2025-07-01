@@ -55,6 +55,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.scanMenuId -> 0
                 R.id.recentScannedMenuId -> 1
                 R.id.favouritesMenuId -> 2
+                R.id.generateQrMenuId -> 3
                 else -> 0
             }
             true
@@ -71,6 +72,7 @@ class MainActivity : AppCompatActivity() {
                     0 -> R.id.scanMenuId
                     1 -> R.id.recentScannedMenuId
                     2 -> R.id.favouritesMenuId
+                    3 -> R.id.generateQrMenuId
                     else -> R.id.scanMenuId
                 }
             }

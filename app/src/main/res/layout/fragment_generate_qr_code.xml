@@ -1,0 +1,60 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- ImageView để hiển thị QR code -->
+    <ImageView
+        android:id="@+id/qrImageView"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_gravity="center"
+        android:background="@android:color/darker_gray"
+        android:scaleType="centerInside"
+        android:contentDescription="QR Code" />
+
+    <!-- EditText nhập text hoặc url -->
+    <EditText
+        android:id="@+id/inputEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nhập text hoặc url"
+        android:layout_marginTop="16dp"/>
+
+    <!-- Chọn màu sắc QR -->
+    <Button
+        android:id="@+id/colorPickerButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Chọn màu QR"
+        android:layout_marginTop="12dp"
+        android:layout_gravity="center"/>
+
+    <!-- Nút xác nhận tạo QR -->
+    <Button
+        android:id="@+id/generateButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tạo QR Code"
+        android:layout_marginTop="16dp"/>
+
+    <!-- Nút download -->
+    <Button
+        android:id="@+id/downloadButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tải về"
+        android:layout_marginTop="12dp"
+        android:visibility="gone"/>
+
+    <!-- Nút chia sẻ -->
+    <Button
+        android:id="@+id/shareButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Chia sẻ"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"/>
+</LinearLayout>

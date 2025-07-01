@@ -13,7 +13,7 @@ import com.example.qrcodescanner.ui.db.DBHelper
 import com.example.qrcodescanner.ui.db.DBHelperI
 import com.example.qrcodescanner.ui.db.database.QrResultDatabase
 import com.example.qrcodescanner.ui.ui.utils.toFormattedDisplay
-
+import android.graphics.BitmapFactory
 class QrCodeResultDialog (
     var context : Context ,
     private val onDismissCallback: (() -> Unit)? = null )
@@ -27,7 +27,7 @@ class QrCodeResultDialog (
     private lateinit var cancelDialog: androidx.appcompat.widget.AppCompatImageView
     private lateinit var scannedDate: androidx.appcompat.widget.AppCompatTextView
     private lateinit var scannedText: androidx.appcompat.widget.AppCompatTextView
-
+    private lateinit var qrImageView: androidx.appcompat.widget.AppCompatImageView
     private lateinit var dbHelperI: DBHelperI
     init {
         init()
@@ -50,8 +50,8 @@ class QrCodeResultDialog (
         cancelDialog = dialog.findViewById(R.id.cancelDialog)
         scannedText = dialog.findViewById(R.id.scannedText)
         scannedDate = dialog.findViewById(R.id.scannedDate)
+        qrImageView = dialog.findViewById(R.id.qrImageView)
         onClicks()
-
     }
 
     fun show(qrResult: QrResult){
@@ -59,6 +59,10 @@ class QrCodeResultDialog (
         scannedDate.text = qrResult.calendar.toFormattedDisplay()
         scannedText.text = qrResult.result
         favouriteIcon.isSelected = qrResult.favourite
+        qrResult.image?.let {
+            val bitmap = BitmapFactory.decodeByteArray(it, 0, it.size)
+            qrImageView.setImageBitmap(bitmap)
+        } ?: qrImageView.setImageResource(android.R.color.transparent)
         dialog.show()
     }
 

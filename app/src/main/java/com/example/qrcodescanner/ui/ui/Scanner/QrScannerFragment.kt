@@ -16,7 +16,10 @@ import com.example.qrcodescanner.ui.db.DBHelper
 import com.example.qrcodescanner.ui.db.DBHelperI
 import com.example.qrcodescanner.ui.db.database.QrResultDatabase
 import com.example.qrcodescanner.ui.ui.dialogs.QrCodeResultDialog
-
+import android.graphics.Bitmap
+import java.io.ByteArrayOutputStream
+import com.google.zxing.BarcodeFormat
+import com.journeyapps.barcodescanner.BarcodeEncoder
 class QrScannerFragment : Fragment() {
     companion object {
         fun newInstance(): QrScannerFragment {
@@ -132,15 +135,26 @@ class QrScannerFragment : Fragment() {
 
     private fun saveToDatabase(result: String) {
         Thread {
-            val insertedRowid = dbHelperI.insertQrResult(result)
+            // Tạo bitmap QR code từ text
+            val barcodeEncoder = BarcodeEncoder()
+            val bitmap = barcodeEncoder.encodeBitmap(
+                result,
+                BarcodeFormat.QR_CODE,
+                800, 800
+            )
+            // Chuyển bitmap thành byte array
+            val stream = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+            val imageBytes = stream.toByteArray()
+
+            val insertedRowid = dbHelperI.insertQrResult(result, imageBytes)
             val qrResult = dbHelperI.getQrResult(insertedRowid)
-            requireActivity().runOnUiThread{
+            requireActivity().runOnUiThread {
                 val dialog = QrCodeResultDialog(requireContext()) {
                     lastResult = null
                 }
                 dialog.show(qrResult)
             }
-
         }.start()
     }
 }

@@ -3,7 +3,7 @@ package com.example.qrcodescanner.ui.db
 import com.example.qrcodescanner.ui.db.entities.QrResult
 
 interface DBHelperI {
-    fun insertQrResult(result : String): Int
+    fun insertQrResult(result : String, image: ByteArray?): Int
 
     fun getQrResult(id: Int): QrResult
 

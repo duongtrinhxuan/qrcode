@@ -5,14 +5,15 @@ import com.example.qrcodescanner.ui.db.entities.QrResult
 import java.util.Calendar
 
 class DBHelper (var qrResultDatabase: QrResultDatabase) : DBHelperI {
-    override fun insertQrResult(result: String): Int {
+    override fun insertQrResult(result: String, image: ByteArray?): Int {
       val time = Calendar.getInstance()
         val resultType = "TEXT"
         val qrResult = QrResult(
             result = result,
             resultType = resultType,
             calendar = time,
-            favourite = false
+            favourite = false,
+            image = image
         )
         return qrResultDatabase.getQrDao().insertQrResult(qrResult).toInt()
     }

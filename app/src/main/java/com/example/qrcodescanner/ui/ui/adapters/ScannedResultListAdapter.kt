@@ -15,7 +15,7 @@ import com.example.qrcodescanner.ui.ui.dialogs.QrCodeResultDialog
 import com.example.qrcodescanner.ui.ui.utils.gone
 import com.example.qrcodescanner.ui.ui.utils.toFormattedDisplay
 import com.example.qrcodescanner.ui.ui.utils.visible
-
+import android.app.Activity
 class ScannedResultListAdapter(
     var dbHelperI: DBHelperI,
     var context: Context,
@@ -72,9 +72,13 @@ class ScannedResultListAdapter(
         }
         private fun deleteThisRecord(qrResult: QrResult, position: Int) {
             qrResult.id?.let { id ->
-                dbHelperI.deleteQrResult(id)
-                listOfScannedResults.removeAt(position)
-                notifyItemRemoved(position)
+                Thread {
+                    dbHelperI.deleteQrResult(id)
+                    (context as? Activity)?.runOnUiThread {
+                        listOfScannedResults.removeAt(position)
+                        notifyItemRemoved(position)
+                    }
+                }.start()
             }
         }
         private fun setFavourite(favourite: Boolean) {

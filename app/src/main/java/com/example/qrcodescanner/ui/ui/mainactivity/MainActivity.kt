@@ -34,17 +34,6 @@ class MainActivity : AppCompatActivity() {
         setViewPagerAdapter()
         setBottomNavigation()
         setViewPagerListener()
-
-        val qrResult = QrResult(
-            result = "Dummy Text",
-            resultType = "Text",
-            favourite = false,
-            calendar = Calendar.getInstance()
-        )
-        Thread {
-            QrResultDatabase.getAppDatabase(this).getQrDao().insertQrResult(qrResult)
-            Log.d("Inserted QR Result: ${qrResult.result}","them thanh cong")
-        }.start()
     }
 
 

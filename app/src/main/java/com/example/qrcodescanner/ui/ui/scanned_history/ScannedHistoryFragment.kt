@@ -101,12 +101,16 @@ class ScannedHistoryFragment : Fragment() {
     }
 
     private fun clearRecords() {
-        when(resultType) {
-            ResultListType.ALL_RESULT -> dbHelperI.deleteAllScannedResults()
-            ResultListType.FAVORITE_RESULT -> dbHelperI.deleteAllFavouriteQrScannerResults()
-        }
-        scannedHistoryRecyclerView?.adapter?.notifyDataSetChanged()
-        showAllResults()
+        Thread {
+            when(resultType) {
+                ResultListType.ALL_RESULT -> dbHelperI.deleteAllScannedResults()
+                ResultListType.FAVORITE_RESULT -> dbHelperI.deleteAllFavouriteQrScannerResults()
+            }
+            requireActivity().runOnUiThread {
+                scannedHistoryRecyclerView?.adapter?.notifyDataSetChanged()
+                showAllResults()
+            }
+        }.start()
     }
 
     private fun setSwipeRefreshLayout(){
